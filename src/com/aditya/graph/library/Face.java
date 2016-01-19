@@ -14,25 +14,26 @@ public class Face
 
     public Face()
     {
-        this.numberOfNodes = 0;
-        this.nodeSeq = new LinkedList<>();
+        numberOfNodes = 0;
+        nodeSeq = new LinkedList<>();
     }
 
     /**
      * This function adds a new node to the clockwise sequence of nodes of the face next to the specified node.
+     *
      * @param newNode Index of new node to be added to the face.
-     * @param nextTo Index of the node next to which the new node has to be added.
+     * @param nextTo  Index of the node next to which the new node has to be added.
      */
     public void insert(int newNode, int nextTo)
     {
-        if (this.nodeSeq.size() == 0)
+        if (nodeSeq.size() == 0)
         {
-            this.nodeSeq.add(newNode);
+            nodeSeq.add(newNode);
             return;
         }
 
         int idxToInsertAt = 0;
-        for (int node: nodeSeq)
+        for (int node : nodeSeq)
         {
             if (node == nextTo)
             {
@@ -41,6 +42,6 @@ public class Face
             idxToInsertAt++;
         }
 
-        this.nodeSeq.add(idxToInsertAt, newNode);
+        nodeSeq.add(idxToInsertAt, newNode);
     }
 }

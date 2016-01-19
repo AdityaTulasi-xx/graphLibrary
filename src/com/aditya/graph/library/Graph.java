@@ -25,13 +25,14 @@ public class Graph
     public Graph(boolean isDirected)
     {
         this.isDirected = isDirected;
-        this.nodesCount = 0;
-        this.edgesCount = 0;
-        this.nodes = new ArrayList<Node>();
+        nodesCount = 0;
+        edgesCount = 0;
+        nodes = new ArrayList<Node>();
     }
 
     /**
      * Adds a new node and returns its index.
+     *
      * @return Index of the newly created node.
      */
     public int addNode()
@@ -42,28 +43,26 @@ public class Graph
 
     /**
      * Adds an unweighted edge to the graph
-     * @param src Source vertex of edge
+     *
+     * @param src  Source vertex of edge
      * @param dest Destination vertex of edge
      * @throws Exception Throws an exception if indices of the vertices are non-existent in the graph
      */
     public void addEdge(int src, int dest) throws Exception
     {
-        this.addEdge(src, dest, 1);
+        addEdge(src, dest, 1);
     }
 
     /**
-     * Adds a weighted edge to the graph
-     * @param src Source vertex of edge
+     * Adds a weighted edge to the graph. This function doesn't take care of duplicate edges.
+     *
+     * @param src  Source vertex of edge
      * @param dest Destination vertex of edge
      * @throws Exception Throws an exception if indices of the vertices are non-existent in the graph
      */
     public void addEdge(int src, int dest, int weight) throws Exception
     {
-        if (nodesCount < src || nodesCount < dest)
-        {
-            throw new Exception("Invalid src or dest value. " + "Number of nodes in graph: " + nodesCount + ". "
-            + "Src: " + src + " Dest: " + dest + ".");
-        }
+        validateSrcDest(src, dest);
 
         nodes.get(src).neighbors.add(new Edge(src, dest, weight));
         if (!isDirected)
@@ -71,6 +70,48 @@ public class Graph
             nodes.get(dest).neighbors.add(new Edge(dest, src, weight));
         }
         ++edgesCount;
+    }
+
+    /**
+     * Removes an edge from the graph. Doesn't do anything if the edge doesn't exist.
+     *
+     * @param src  Source of edge to be removed
+     * @param dest Destination of edge to be removed
+     * @throws Exception Throws exception if there is an issue with the indices of nodes
+     */
+    public void removeEdge(int src, int dest) throws Exception
+    {
+        validateSrcDest(src, dest);
+
+        for (int i = 0; i < nodes.get(src).neighbors.size(); i++)
+        {
+            if (nodes.get(src).neighbors.get(i).dest == dest)
+            {
+                nodes.get(src).neighbors.remove(i);
+                break;
+            }
+        }
+
+        if (!isDirected)
+        {
+            for (int i = 0; i < nodes.get(dest).neighbors.size(); i++)
+            {
+                if (nodes.get(dest).neighbors.get(i).dest == src)
+                {
+                    nodes.get(dest).neighbors.remove(i);
+                    break;
+                }
+            }
+        }
+    }
+
+    private void validateSrcDest(int src, int dest) throws Exception
+    {
+        if (nodesCount < src || nodesCount < dest)
+        {
+            throw new Exception("Invalid src or dest value. " + "Number of nodes in graph: " + nodesCount + ". "
+                    + "Src: " + src + " Dest: " + dest + ".");
+        }
     }
 
     /**
@@ -84,9 +125,9 @@ public class Graph
         Edge[] edges = new Edge[edgesCount];
         int count = 0;
 
-        for (Node node: this.nodes)
+        for (Node node : nodes)
         {
-            for (Edge edge: node.neighbors)
+            for (Edge edge : node.neighbors)
             {
                 if (isDirected)
                 {

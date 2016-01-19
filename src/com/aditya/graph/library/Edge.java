@@ -14,26 +14,28 @@ public class Edge
 
     /**
      * Constructor for unweighted edges
-     * @param src Source vertex of the edge
+     *
+     * @param src  Source vertex of the edge
      * @param dest Destination vertex of the edge
      */
     public Edge(int src, int dest)
     {
         this.src = src;
         this.dest = dest;
-        this.weight = 1;
+        weight = 1;
     }
 
     /**
      * Constructor for weighted edges
-     * @param src Source vertex of the edge
-     * @param dest Destination vertex of the edge
+     *
+     * @param src    Source vertex of the edge
+     * @param dest   Destination vertex of the edge
      * @param weight Weight of the edge (if applicable)
      */
     public Edge(int src, int dest, int weight)
     {
         this(src, dest);
         // overwrite the default weight
-        this.weight = weight;
+        this.weight = weight
     }
 }

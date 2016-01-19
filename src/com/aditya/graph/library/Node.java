@@ -13,30 +13,33 @@ public class Node
 
     /**
      * Constructor for creating a node object
+     *
      * @param idx Index of the node
      */
     public Node(int idx)
     {
         this.idx = idx;
-        this.neighbors = new ArrayList<>();
+        neighbors = new ArrayList<>();
     }
 
     /**
      * Add an unweighted edge to the node
+     *
      * @param dest Destination of the edge
      */
     public void addEdge(int dest)
     {
-        this.neighbors.add(new Edge(this.idx, dest));
+        neighbors.add(new Edge(idx, dest));
     }
 
     /**
      * Add a weighted edge to the node
-     * @param dest Destination of the edge
+     *
+     * @param dest   Destination of the edge
      * @param weight Weight of the edge
      */
     public void addEdge(int dest, int weight)
     {
-        this.neighbors.add((new Edge(this.idx, dest, weight)));
+        neighbors.add((new Edge(idx, dest, weight)));
     }
 }
