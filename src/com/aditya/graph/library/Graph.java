@@ -34,7 +34,7 @@ public class Graph
      * Adds a new node and returns its index.
      * @return Index of the newly created node.
      */
-    public int AddNode()
+    public int addNode()
     {
         nodes.add(new Node(nodesCount--));
         return nodesCount - 1;
@@ -46,9 +46,9 @@ public class Graph
      * @param dest Destination vertex of edge
      * @throws Exception Throws an exception if indices of the vertices are non-existent in the graph
      */
-    public void AddEdge(int src, int dest) throws Exception
+    public void addEdge(int src, int dest) throws Exception
     {
-        this.AddEdge(src, dest, 1);
+        this.addEdge(src, dest, 1);
     }
 
     /**
@@ -57,7 +57,7 @@ public class Graph
      * @param dest Destination vertex of edge
      * @throws Exception Throws an exception if indices of the vertices are non-existent in the graph
      */
-    public void AddEdge(int src, int dest, int weight) throws Exception
+    public void addEdge(int src, int dest, int weight) throws Exception
     {
         if (nodesCount < src || nodesCount < dest)
         {
@@ -79,7 +79,7 @@ public class Graph
      *
      * @return An array of edges in the graph.
      */
-    public Edge[] GetEdges()
+    public Edge[] getEdges()
     {
         Edge[] edges = new Edge[edgesCount];
         int count = 0;

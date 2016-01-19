@@ -25,7 +25,7 @@ public class Node
      * Add an unweighted edge to the node
      * @param dest Destination of the edge
      */
-    public void AddEdge(int dest)
+    public void addEdge(int dest)
     {
         this.neighbors.add(new Edge(this.idx, dest));
     }
@@ -35,7 +35,7 @@ public class Node
      * @param dest Destination of the edge
      * @param weight Weight of the edge
      */
-    public void AddEdge(int dest, int weight)
+    public void addEdge(int dest, int weight)
     {
         this.neighbors.add((new Edge(this.idx, dest, weight)));
     }
