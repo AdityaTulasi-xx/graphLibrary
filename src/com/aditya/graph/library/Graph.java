@@ -37,7 +37,7 @@ public class Graph
      */
     public int addNode()
     {
-        nodes.add(new Node(nodesCount--));
+        nodes.add(new Node(nodesCount++));
         return nodesCount - 1;
     }
 
@@ -103,6 +103,7 @@ public class Graph
                 }
             }
         }
+        --edgesCount;
     }
 
     private void validateSrcDest(int src, int dest) throws Exception

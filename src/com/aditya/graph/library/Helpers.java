@@ -70,7 +70,7 @@ public final class Helpers
         for (Edge edge : graph.nodes.get(curNode).neighbors)
         {
             // preventing calling parent node of dfs
-            if (parentNode != -1 && parentNode != edge.dest)
+            if (parentNode == -1 || parentNode != edge.dest)
             {
                 if (findSomeCycle(graph, edge.dest, curNode, pathSoFar, hasVisited))
                 {

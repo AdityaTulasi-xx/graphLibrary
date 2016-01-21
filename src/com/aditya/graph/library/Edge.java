@@ -36,6 +36,6 @@ public class Edge
     {
         this(src, dest);
         // overwrite the default weight
-        this.weight = weight
+        this.weight = weight;
     }
 }
