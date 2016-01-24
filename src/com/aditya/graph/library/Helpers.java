@@ -6,6 +6,52 @@ import java.util.LinkedList;
 public final class Helpers
 {
     /**
+     * Finds components of the graph and returns an array of numbers which indicates the component index of
+     * each node of the graph.
+     *
+     * @param graph Graph in which components have to be found
+     * @return Array indicating components of the graph
+     */
+    public static int[] findComponents(Graph graph)
+    {
+        int[] components = new int[graph.nodesCount];
+        int curComponent = 0;
+
+        for (int i = 0; i < graph.nodesCount; i++)
+        {
+            components[i] = -1;
+        }
+
+        for (int i = 0; i < graph.nodesCount; i++)
+        {
+            if (components[i] == -1)
+            {
+                curComponent++;
+                findComponentsInternal(graph, i, components, curComponent);
+            }
+        }
+
+        return components;
+    }
+
+    private static void findComponentsInternal(Graph graph, int curIdx, int[] components, int curComponent)
+    {
+        if (components[curIdx] == -1)
+        {
+            return;
+        }
+
+        components[curIdx] = curComponent;
+        for (Edge edge : graph.nodes.get(curIdx).neighbors)
+        {
+            if (components[edge.dest] == -1)
+            {
+                findComponentsInternal(graph, edge.dest, components, curComponent);
+            }
+        }
+    }
+
+    /**
      * Takes any graph, checks if there is a cycle anywhere and returns a list of nodes if there is one.
      * Returns null otherwise.
      *

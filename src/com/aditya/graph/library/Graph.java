@@ -7,6 +7,8 @@ import java.util.ArrayList;
  */
 public class Graph
 {
+    private int _graphPrintMaxLength = 100000;
+
     public int nodesCount;
 
     public int edgesCount;
@@ -79,9 +81,17 @@ public class Graph
      * @param dest Destination of edge to be removed
      * @throws Exception Throws exception if there is an issue with the indices of nodes
      */
-    public void removeEdge(int src, int dest) throws Exception
+    public void removeEdge(int src, int dest)
     {
-        validateSrcDest(src, dest);
+        try
+        {
+            validateSrcDest(src, dest);
+        }
+        catch (Exception ex)
+        {
+            System.out.println("Failed to validate src and dest. Ignoring removal.");
+            return;
+        }
 
         for (int i = 0; i < nodes.get(src).neighbors.size(); i++)
         {
@@ -142,5 +152,78 @@ public class Graph
         }
 
         return edges;
+    }
+
+    /**
+     * Clones graph object and creates a new replica.
+     *
+     * @return Cloned object
+     */
+    public Graph cloneGraph()
+    {
+        Graph clone = new Graph(this.isDirected);
+
+        try
+        {
+            // add all the nodes
+            for (int i = 0; i < this.nodesCount; i++)
+            {
+                clone.addNode();
+            }
+
+            // add all edges
+            for (int i = 0; i < this.nodesCount; i++)
+            {
+                for (Edge edge : this.nodes.get(i).neighbors)
+                {
+                    if (this.isDirected)
+                    {
+                        clone.addEdge(edge.src, edge.dest, edge.weight);
+                    }
+                    else if (edge.src < edge.dest)
+                    {
+                        clone.addEdge(edge.src, edge.dest, edge.weight);
+                    }
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            System.out.println("Some unexpected exception occurred while cloning the graph. \n\n" + ex);
+            clone = null;
+        }
+
+        return clone;
+    }
+
+    /**
+     * Prints the graph node by node. For each node, the edges are printed in the order they are present
+     * in the neighbors list of node.
+     *
+     * @return A formatted string that represents the graph's structure.
+     */
+    @Override
+    public String toString()
+    {
+        StringBuilder printedGraph = new StringBuilder();
+        printedGraph.append("Is directed: " + this.isDirected + ".\n\n");
+        printedGraph.append("Number of nodes: " + this.nodesCount + ".\n\n");
+        printedGraph.append("Number of edges: " + this.edgesCount + ".\n\n");
+
+        for (int i = 0; i < this.nodesCount; i++)
+        {
+            printedGraph.append("Node #" + i + ":");
+            for (Edge edge : this.nodes.get(i).neighbors)
+            {
+                if (!this.isDirected && edge.src > edge.dest)
+                {
+                    continue;
+                }
+                printedGraph.append(" " + edge.dest);
+            }
+            printedGraph.append(".\n");
+        }
+
+        return printedGraph.toString();
     }
 }
