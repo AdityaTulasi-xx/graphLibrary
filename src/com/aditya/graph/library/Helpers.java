@@ -1,6 +1,7 @@
 package com.aditya.graph.library;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.LinkedList;
 
 public final class Helpers
@@ -36,7 +37,7 @@ public final class Helpers
 
     private static void findComponentsInternal(Graph graph, int curIdx, int[] components, int curComponent)
     {
-        if (components[curIdx] == -1)
+        if (components[curIdx] != -1)
         {
             return;
         }
@@ -48,6 +49,92 @@ public final class Helpers
             {
                 findComponentsInternal(graph, edge.dest, components, curComponent);
             }
+        }
+    }
+
+    public static ArrayList<ArrayList<Integer>> findNonEmbeddedComponents(Graph graph, boolean[] isEmbedded)
+    {
+        ArrayList<ArrayList<Integer>> components = new ArrayList<>();
+        HashSet<String> edgesRemaining = new HashSet<>();
+        boolean[] hasVisited = new boolean[graph.nodesCount];
+        int[] componentNumber = new int[graph.nodesCount];
+
+        for (Edge edge : graph.getEdges())
+        {
+            edgesRemaining.add(getStringForEdge(edge));
+        }
+
+        for (int i = 0; i < graph.nodesCount; i++)
+        {
+            if (!isEmbedded[i] && !hasVisited[i])
+            {
+                for (int j = 0; j < graph.nodesCount; j++)
+                {
+                    componentNumber[j] = -1;
+                }
+
+                findNonEmbeddedComponent(graph, i, isEmbedded, hasVisited, componentNumber, edgesRemaining);
+                ArrayList<Integer> newComponent = new ArrayList<>();
+
+                for (int j = 0; j < graph.nodesCount; j++)
+                {
+                    if (componentNumber[j] != -1)
+                    {
+                        newComponent.add(j);
+                    }
+                }
+
+                if (newComponent.size() != 0)
+                {
+                    components.add(newComponent);
+                }
+            }
+        }
+
+        // add edges that are still remaining as separate components
+
+        return components;
+    }
+
+    private static void findNonEmbeddedComponent(
+            Graph graph,
+            int curNode,
+            boolean[] isEmbedded,
+            boolean[] hasVisited,
+            int[] componentNumber,
+            HashSet<String> edgesRemaining)
+    {
+        // mark it visited ONLY if it is not an embedded node
+        hasVisited[curNode] = !isEmbedded[curNode] & true;
+        componentNumber[curNode] = 1; // this decides current component
+
+        if (isEmbedded[curNode] || hasVisited[curNode])
+        {
+            // do not go through the edges of an already embedded node
+            // nothing to do
+            // we will use hasVisited to build the component in calling function
+            return;
+        }
+
+        for (Edge edge : graph.nodes.get(curNode).neighbors)
+        {
+            if (!hasVisited[edge.dest])
+            {
+                edgesRemaining.remove(getStringForEdge(edge));
+                findNonEmbeddedComponent(graph, edge.dest, isEmbedded, hasVisited, componentNumber, edgesRemaining);
+            }
+        }
+    }
+
+    private static String getStringForEdge(Edge edge)
+    {
+        if (edge.src < edge.dest)
+        {
+            return edge.src + "." + edge.dest;
+        }
+        else
+        {
+            return edge.dest + "." + edge.src;
         }
     }
 
@@ -92,8 +179,6 @@ public final class Helpers
             LinkedList<Integer> pathSoFar,
             boolean[] hasVisited)
     {
-        pathSoFar.add(curNode);
-
         if (hasVisited[curNode])
         {
             // remove any path before cycle began
@@ -111,6 +196,7 @@ public final class Helpers
             return true;
         }
 
+        pathSoFar.add(curNode);
         hasVisited[curNode] = true;
 
         for (Edge edge : graph.nodes.get(curNode).neighbors)

@@ -23,8 +23,16 @@ public class DMPPlanarEmbeddingStrategy implements IPlanarEmbeddingMethods
     public boolean isPlanar(Graph graph, Graph planarEmbeddedGraph)
     {
         boolean isPlanar = true;
+        // Todo: Check that the array is initialized to false.
         boolean[] isNodeEmbedded = new boolean[graph.nodesCount];
-        Graph yetToEmbed = graph.cloneGraph();
+        Graph subGraphYetToEmbed = graph.cloneGraph();
+
+        // create embedded graph with no edges
+        // we'll keep edges in sequence as and when they are embedded
+        for (int i = 0; i < graph.nodesCount; i++)
+        {
+            planarEmbeddedGraph.addNode();
+        }
 
         // in each face the sequence of nodes is maintained in such a way that as we keep walking beside the face
         // we should see each node on our left side in the same sequence. whenever we update a face we make sure
@@ -32,15 +40,20 @@ public class DMPPlanarEmbeddingStrategy implements IPlanarEmbeddingMethods
         ArrayList<LinkedList<Integer>> faces = new ArrayList<>();
 
         // get a random cycle and begin the algorithm
-        LinkedList<Integer> currentPath = Helpers.findSomeCycle(graph);
-        currentPath.removeLast(); // because the first vertex is repeated in the helper function
+        LinkedList<Integer> pathToEmbed = Helpers.findSomeCycle(graph);
 
-        removeAllNodesInPath(yetToEmbed, currentPath);
-        embedNewPath(faces, currentPath, -1, isNodeEmbedded, planarEmbeddedGraph);
+        System.out.println(pathToEmbed);
 
-        while (isPlanar && yetToEmbed.edgesCount > 0)
+        // adding first node at the ending so that the cyclic edge gets removed
+        pathToEmbed.addLast(pathToEmbed.getFirst());
+        removeAllNodesInPathFromGraph(subGraphYetToEmbed, pathToEmbed);
+        pathToEmbed.removeLast();
+
+        embedNewPath(faces, pathToEmbed, -1, isNodeEmbedded, planarEmbeddedGraph);
+
+        while (isPlanar && subGraphYetToEmbed.edgesCount > 0)
         {
-            ArrayList<ArrayList<Integer>> components = getNonEmptyComponents(yetToEmbed);
+            ArrayList<ArrayList<Integer>> components = getNonEmptyComponents(subGraphYetToEmbed);
             ArrayList<ArrayList<Integer>> embeddableFaces = new ArrayList<>();
             int componentWithOneFace = -1;
             int curComponent = 0;
@@ -54,11 +67,18 @@ public class DMPPlanarEmbeddingStrategy implements IPlanarEmbeddingMethods
                 }
                 else if (noOfFaces == 0)
                 {
+                    System.out.println("Failed for this component");
+                    System.out.println(component);
                     isPlanar = false;
                     break;
                 }
 
                 curComponent++;
+            }
+
+            if (!isPlanar)
+            {
+                continue;
             }
 
             if (componentWithOneFace == -1)
@@ -67,17 +87,26 @@ public class DMPPlanarEmbeddingStrategy implements IPlanarEmbeddingMethods
                 componentWithOneFace = 0;
             }
 
-            currentPath = Helpers.findPathBetweenAnyTwo(
-                    yetToEmbed,
+            pathToEmbed = Helpers.findPathBetweenAnyTwo(
+                    subGraphYetToEmbed,
                     getEmbeddedNodesInComponent(components.get(componentWithOneFace), isNodeEmbedded));
+
+            System.out.println(pathToEmbed);
 
             embedNewPath(
                     faces,
-                    currentPath,
+                    pathToEmbed,
                     embeddableFaces.get(componentWithOneFace).get(0),
-                    isNodeEmbedded, planarEmbeddedGraph);
+                    isNodeEmbedded,
+                    planarEmbeddedGraph);
 
-            removeAllNodesInPath(yetToEmbed, currentPath);
+            removeAllNodesInPathFromGraph(subGraphYetToEmbed, pathToEmbed);
+        }
+
+        System.out.println("Faces:\n");
+        for (LinkedList<Integer> face : faces)
+        {
+            System.out.println(face);
         }
 
         return isPlanar;
@@ -97,7 +126,7 @@ public class DMPPlanarEmbeddingStrategy implements IPlanarEmbeddingMethods
             }
         }
 
-        for (int i = 1; i < componentCount; i++)
+        for (int i = 1; i <= componentCount; i++)
         {
             ArrayList<Integer> component = new ArrayList<>();
             for (int j = 0; j < components.length; j++)
@@ -116,7 +145,7 @@ public class DMPPlanarEmbeddingStrategy implements IPlanarEmbeddingMethods
         return nonEmptyComponents;
     }
 
-    private void removeAllNodesInPath(Graph graph, LinkedList<Integer> path)
+    private void removeAllNodesInPathFromGraph(Graph graph, LinkedList<Integer> path)
     {
         if (path.size() == 1)
         {
@@ -126,14 +155,11 @@ public class DMPPlanarEmbeddingStrategy implements IPlanarEmbeddingMethods
         int lastNode = -1;
         for (Integer node : path)
         {
-            if (lastNode == -1)
-            {
-                lastNode = node;
-            }
-            else
+            if (lastNode != -1)
             {
                 graph.removeEdge(lastNode, node);
             }
+            lastNode = node;
         }
     }
 
@@ -167,7 +193,7 @@ public class DMPPlanarEmbeddingStrategy implements IPlanarEmbeddingMethods
                 canEmbedFaces.add(i);
             }
         }
-        return null;
+        return canEmbedFaces;
     }
 
     private boolean canEmbedInFace(ArrayList<Integer> vertices, LinkedList<Integer> face)
@@ -185,13 +211,6 @@ public class DMPPlanarEmbeddingStrategy implements IPlanarEmbeddingMethods
             boolean[] isEmbedded,
             Graph planarEmbeddedGraph)
     {
-        // create embedded graph with no edges
-        // we'll keep edges in sequence as and when they are embedded
-        for (int i = 0; i < isEmbedded.length; i++)
-        {
-            planarEmbeddedGraph.addNode();
-        }
-
         for (Integer node : pathToEmbed)
         {
             isEmbedded[node] = true;
@@ -201,38 +220,41 @@ public class DMPPlanarEmbeddingStrategy implements IPlanarEmbeddingMethods
         {
             // create two new faces and add them to faces list. for this case we know that the
             // path we get as input is a cycle. no validations on that.
-            LinkedList<Integer> internalFace = new LinkedList<>(pathToEmbed);
+            LinkedList<Integer> internalFace = new LinkedList<>();
             LinkedList<Integer> externalFace = new LinkedList<>();
 
             int prevNode = -1;
             for (Integer node : pathToEmbed)
             {
+                internalFace.add(node);
                 externalFace.addFirst(node);
-                if (prevNode == -1)
-                {
-                    prevNode = node;
-                }
-                else
+                if (prevNode != -1)
                 {
                     // adding embedded edges to the new graph
                     addFreshEdge(planarEmbeddedGraph, prevNode, node);
                     addFreshEdge(planarEmbeddedGraph, node, prevNode);
                 }
+                prevNode = node;
             }
+            // adding the edge between start node and end node
+            addFreshEdge(planarEmbeddedGraph, pathToEmbed.getFirst(), pathToEmbed.getLast());
+            addFreshEdge(planarEmbeddedGraph, pathToEmbed.getLast(), pathToEmbed.getFirst());
 
             faces.add(internalFace);
             faces.add(externalFace);
         }
         else
         {
-            // we get the face in which current path has to be embedded and we split that face into two
-            // add all nodes of the path except start and end in the same order
+            // we get the face in which current path has to be embedded and we split that face into two.
+            // add all nodes of the path except start and end in the same order to original face.
             // create a new list with nodes that we delete from original face. add all nodes from the path
             // in reverse order.
             // similar handling is done in case
             int startNode = pathToEmbed.getFirst();
             int endNode = pathToEmbed.getLast();
-            int startNodeIdx = -1, endNodeIdx = -1;
+            int startNodeIdx = -1;
+            int endNodeIdx = -1;
+
             LinkedList<Integer> curFace = faces.get(faceIdx);
 
             int curIdx = 0;
@@ -267,7 +289,6 @@ public class DMPPlanarEmbeddingStrategy implements IPlanarEmbeddingMethods
 
             // let's build the new face first
             boolean shouldAdd = false;
-            int prevNode = curFace.getLast();
             LinkedList<Integer> newFace = new LinkedList<>();
             for (Integer node : curFace)
             {
@@ -277,32 +298,32 @@ public class DMPPlanarEmbeddingStrategy implements IPlanarEmbeddingMethods
                 }
                 else if (shouldAdd)
                 {
-                    // whenever we add a new node, we can add edges freshly. no need to check for neighbors and sequence
-                    if (node != endNode)
-                    {
-                        // end node has to be handled separately
-                        addFreshEdge(planarEmbeddedGraph, node, prevNode);
-                    }
-                    if (prevNode != startNode)
-                    {
-                        // start node has to be handled separately
-                        addFreshEdge(planarEmbeddedGraph, prevNode, node);
-                    }
                     if (node == endNode)
                     {
                         break;
                     }
-                    else
-                    {
-                        newFace.add(node);
-                    }
+                    newFace.add(node);
                 }
-                prevNode = node;
             }
+
+            int prevNode = -1;
             // adding reverse of the actual path
             for (Integer node : pathToEmbed)
             {
+                if (prevNode != -1)
+                {
+                    // start and end nodes are handled separately below
+                    if (prevNode != startNode)
+                    {
+                        addFreshEdge(planarEmbeddedGraph, prevNode, node);
+                    }
+                    if (node != endNode)
+                    {
+                        addFreshEdge(planarEmbeddedGraph, node, prevNode);
+                    }
+                }
                 newFace.addFirst(node);
+                prevNode = node;
             }
             // new face built completely
             faces.add(newFace);
@@ -310,18 +331,21 @@ public class DMPPlanarEmbeddingStrategy implements IPlanarEmbeddingMethods
             handleStartAndEndEdgeAdditions(planarEmbeddedGraph, curFace, pathToEmbed, startNode, endNode);
 
             // rebuilding original face if required
+            LinkedList<Integer> newCurFace = new LinkedList<>();
+            // add all nodes till start (included)
+            newCurFace.addAll(curFace.subList(0, startNodeIdx + 1));
+
             if (pathToEmbed.size() > 1)
             {
-                LinkedList<Integer> newCurFace = new LinkedList<>();
-                // add all nodes till start
-                newCurFace.addAll(curFace.subList(0, startNodeIdx));
                 // add other nodes in path we are embedding
                 newCurFace.addAll(pathToEmbed.subList(1, pathToEmbed.size() - 1));
-                // add all nodes from end node to last of original face
-                curFace.addAll(curFace.subList(endNodeIdx, curFace.size()));
-                curFace.clear();
-                curFace.addAll(newCurFace);
             }
+
+            // add all nodes from end node to last of original face
+            newCurFace.addAll(curFace.subList(endNodeIdx, curFace.size()));
+
+            curFace.clear();
+            curFace.addAll(newCurFace);
         }
     }
 
@@ -342,6 +366,7 @@ public class DMPPlanarEmbeddingStrategy implements IPlanarEmbeddingMethods
         // let's add first node to ending so that we handle the corner case of a node being last in the face's list
         curFace.add(curFace.getFirst());
 
+        // in this function we are sure that the last node will never be start node. we can ignore that corner case
         for (Integer node : curFace)
         {
             secLastNode = lastNode;
@@ -352,7 +377,9 @@ public class DMPPlanarEmbeddingStrategy implements IPlanarEmbeddingMethods
             {
                 addEdgeBetweenNodes(planarEmbeddedGraph, startNode, secLastNode, curNode, pathToEmbed.get(1));
             }
-            else if (lastNode == endNode)
+            // this particular case might occur if end node is the last node of the face. we will reach this point
+            // again when we reach end node normally. we have start node added after this.
+            else if (lastNode == endNode && secLastNode != -1)
             {
                 addEdgeBetweenNodes(
                         planarEmbeddedGraph,
@@ -384,11 +411,8 @@ public class DMPPlanarEmbeddingStrategy implements IPlanarEmbeddingMethods
         // find a point where both nodes are neighbors and insert the node between them
         ArrayList<Edge> neighbors = graph.nodes.get(nodeIdx).neighbors;
         int neighborsCount = neighbors.size();
-        if (prevNode == neighbors.get(0).dest && nextNode == neighbors.get(neighborsCount).dest)
-        {
-            neighbors.add(new Edge(nodeIdx, newNeighbor));
-        }
-        else if (nextNode == neighbors.get(0).dest && prevNode == neighbors.get(neighborsCount).dest)
+        if ((prevNode == neighbors.get(0).dest && nextNode == neighbors.get(neighborsCount - 1).dest) ||
+                (nextNode == neighbors.get(0).dest && prevNode == neighbors.get(neighborsCount - 1).dest))
         {
             neighbors.add(new Edge(nodeIdx, newNeighbor));
         }
@@ -396,13 +420,11 @@ public class DMPPlanarEmbeddingStrategy implements IPlanarEmbeddingMethods
         {
             for (int i = 0; i < neighborsCount - 1; i++)
             {
-                if (prevNode == neighbors.get(i).dest && nextNode == neighbors.get(i + 1).dest)
+                if ((prevNode == neighbors.get(i).dest && nextNode == neighbors.get(i + 1).dest) ||
+                        (nextNode == neighbors.get(i).dest && prevNode == neighbors.get(i + 1).dest))
                 {
                     neighbors.add(i + 1, new Edge(nodeIdx, newNeighbor));
-                }
-                else if (nextNode == neighbors.get(i).dest && prevNode == neighbors.get(i + 1).dest)
-                {
-                    neighbors.add(i + 1, new Edge(nodeIdx, newNeighbor));
+                    break;
                 }
             }
         }

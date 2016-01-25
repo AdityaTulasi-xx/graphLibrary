@@ -1,8 +1,9 @@
 package Main;
 
-import com.aditya.graph.library.Graph;
-import com.aditya.graph.library.Helpers;
+import com.aditya.graph.library.*;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -16,7 +17,7 @@ public class Main
 
         try
         {
-            testFindCycle();
+            // testFindCycle();
             System.out.println("FindCycle test passed.");
         }
         catch (Exception ex)
@@ -26,7 +27,7 @@ public class Main
 
         try
         {
-            testFindSomePath();
+            // testFindSomePath();
             System.out.println("FindSomePath test passed.");
         }
         catch (Exception ex)
@@ -34,7 +35,25 @@ public class Main
             System.out.println("FindSomePath test failed. " + ex.getMessage());
         }
 
+        // test the output manually
+        // can't test automatically
+        testPlanarEmbedding();
+
         System.out.println("End testing");
+    }
+
+    public static void testPlanarEmbedding()
+    {
+        Graph graphToTest = readFileToGraph(
+                "C:\\Users\\adity\\IdeaProjects\\GraphLibrary\\inputFiles\\simplePlanar2.txt");
+
+        IPlanarEmbeddingMethods embedder = PlanarEmbeddingFactory
+                .GetPlanarEmbeddingStrategy(PlanarEmbeddingStrategies.DMP);
+
+        System.out.println("Graph we are testing on:\n" + graphToTest);
+        Graph embeddedGraph = new Graph(false);
+        embedder.isPlanar(graphToTest, embeddedGraph);
+        System.out.println(embeddedGraph);
     }
 
     public static void testFindCycle() throws Exception
@@ -60,7 +79,6 @@ public class Main
         expectedCycle.add(3);
         expectedCycle.add(4);
         expectedCycle.add(5);
-        expectedCycle.add(2);
 
         compareLists(expectedCycle, cycle);
 
@@ -118,13 +136,40 @@ public class Main
             if (resultItr.hasNext() != expectedItr.hasNext())
             {
                 throw new Exception("Lengths of lists don't match. " +
-                "Length of first list: " + list1.size() + " " +
-                "Length of second list: " + list2.size());
+                        "Length of first list: " + list1.size() + " " +
+                        "Length of second list: " + list2.size());
             }
             if (resultItr.next() != expectedItr.next())
             {
                 throw new Exception("Nodes of lists don't match");
             }
         }
+    }
+
+    private static Graph readFileToGraph(String pathToFile)
+    {
+        Graph toReturn = new Graph(false);
+        try
+        {
+            BufferedReader reader = new BufferedReader(new FileReader(pathToFile));
+            int nodesCount = Integer.parseInt(reader.readLine());
+            int edgeCount = Integer.parseInt(reader.readLine());
+            for (int i = 0; i < nodesCount; i++)
+            {
+                toReturn.addNode();
+            }
+
+            for (int i = 0; i < edgeCount; i++)
+            {
+                String[] nodesOfEdge = reader.readLine().split("\\s+");
+                toReturn.addEdge(Integer.parseInt(nodesOfEdge[0]), Integer.parseInt(nodesOfEdge[1]));
+            }
+            reader.close();
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+        return toReturn;
     }
 }

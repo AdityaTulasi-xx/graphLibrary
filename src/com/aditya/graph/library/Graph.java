@@ -9,8 +9,14 @@ public class Graph
 {
     private int _graphPrintMaxLength = 100000;
 
+    /**
+     * This is a read-only property. Modify at your own risk.
+     */
     public int nodesCount;
 
+    /**
+     * This is a read-only property. Modify at your own risk.
+     */
     public int edgesCount;
 
     public boolean isDirected;
@@ -215,10 +221,6 @@ public class Graph
             printedGraph.append("Node #" + i + ":");
             for (Edge edge : this.nodes.get(i).neighbors)
             {
-                if (!this.isDirected && edge.src > edge.dest)
-                {
-                    continue;
-                }
                 printedGraph.append(" " + edge.dest);
             }
             printedGraph.append(".\n");
