@@ -23,7 +23,6 @@ public class DMPPlanarEmbeddingStrategy implements IPlanarEmbeddingMethods
     public boolean isPlanar(Graph graph, Graph planarEmbeddedGraph)
     {
         boolean isPlanar = true;
-        // Todo: Check that the array is initialized to false.
         boolean[] isNodeEmbedded = new boolean[graph.nodesCount];
         Graph subGraphYetToEmbed = graph.cloneGraph();
 
@@ -53,7 +52,8 @@ public class DMPPlanarEmbeddingStrategy implements IPlanarEmbeddingMethods
 
         while (isPlanar && subGraphYetToEmbed.edgesCount > 0)
         {
-            ArrayList<ArrayList<Integer>> components = getNonEmptyComponents(subGraphYetToEmbed);
+            ArrayList<ArrayList<Integer>> components =
+                    Helpers.findNonEmbeddedComponents(subGraphYetToEmbed, isNodeEmbedded);
             ArrayList<ArrayList<Integer>> embeddableFaces = new ArrayList<>();
             int componentWithOneFace = -1;
             int curComponent = 0;
@@ -89,7 +89,8 @@ public class DMPPlanarEmbeddingStrategy implements IPlanarEmbeddingMethods
 
             pathToEmbed = Helpers.findPathBetweenAnyTwo(
                     subGraphYetToEmbed,
-                    getEmbeddedNodesInComponent(components.get(componentWithOneFace), isNodeEmbedded));
+                    getEmbeddedNodesInComponent(components.get(componentWithOneFace), isNodeEmbedded),
+                    components.get(componentWithOneFace));
 
             System.out.println(pathToEmbed);
 
@@ -107,6 +108,11 @@ public class DMPPlanarEmbeddingStrategy implements IPlanarEmbeddingMethods
         for (LinkedList<Integer> face : faces)
         {
             System.out.println(face);
+        }
+
+        if (isPlanar)
+        {
+            planarEmbeddedGraph.faces = faces;
         }
 
         return isPlanar;
@@ -430,9 +436,114 @@ public class DMPPlanarEmbeddingStrategy implements IPlanarEmbeddingMethods
         }
     }
 
+    /**
+     * This uses a bruteforce algorithm that goes over all the faces, removes any triangular faces, adds edges to
+     * faces that aren't triangular until we exhaust all faces. This tampers the list of faces and at the end it just
+     * becomes null because we don't need it anymore.
+     *
+     * @param graph             Graph object returned by isPlanar function.
+     * @param triangulatedGraph Fully triangulated version of the input graph. Initialize an empty graph object and
+     */
     @Override
     public void triangulate(Graph graph, Graph triangulatedGraph)
     {
+        graph.cloneGraph(triangulatedGraph);
+        ArrayList<LinkedList<Integer>> faces = triangulatedGraph.faces;
+        HashSet<String> edgesInGraph = new HashSet<>();
 
+        // go through all faces and add edges.
+        for (int i = 0; i < faces.size(); i++)
+        {
+            if (faces.get(i).size() == 3)
+            {
+                faces.remove(i);
+                i--;
+            }
+        }
+        for (Edge edge : triangulatedGraph.getEdges())
+        {
+            edgesInGraph.add(Helpers.getStringForEdge(edge));
+        }
+
+        while (faces.size() > 0)
+        {
+            // choose a random face. try to add edges to it. remove updated faces if necessary.
+            triangulateOneFace(triangulatedGraph, faces.get(0), edgesInGraph);
+            faces.remove(0);
+        }
+
+        // rotate neighbors of each node so that all of them follow the same sequence
+    }
+
+    // this function just adds edges that are missing to the graph.
+    private void triangulateOneFace(Graph triangulatedGraph, LinkedList<Integer> face, HashSet<String> setOfEdges)
+    {
+        if (face.size() <= 3)
+        {
+            return;
+        }
+
+        ArrayList<Integer> nodesInFace = new ArrayList<>(face);
+        int nodesCountInFace = nodesInFace.size();
+        int i;
+
+        // let's find the node that is not connected to all nodes other than neighbors
+        for (i = 0; i < nodesInFace.size(); i++)
+        {
+            boolean isConnectedToSomeNode = false;
+            for (int j = 0; j < nodesCountInFace; j++)
+            {
+                if (j != i && Math.abs(i - j) != 1 && Math.abs(i - j) != (nodesCountInFace - 1))
+                {
+                    if (setOfEdges.contains(Helpers.getStringForEdge(
+                            new Edge(nodesInFace.get(i), nodesInFace.get(j)))))
+                    {
+                        isConnectedToSomeNode = true;
+                        break;
+                    }
+                }
+            }
+            if (!isConnectedToSomeNode)
+            {
+                // i is the node we have to connect with every other node in the face
+                break;
+            }
+        }
+
+        if (i == nodesInFace.size())
+        {
+            // hack to throw some exception
+            triangulatedGraph.nodesCount = -1;
+            return;
+        }
+
+        int nextNeighbor = -1;
+        for (int j = 0; j < nodesInFace.size(); j++)
+        {
+            if (i != j && Math.abs(i - j) != 1 && Math.abs(i - j) != (nodesCountInFace - 1))
+            {
+                setOfEdges.add(Helpers.getStringForEdge(new Edge(nodesInFace.get(i), nodesInFace.get(j))));
+                triangulatedGraph.edgesCount++;
+
+                if (nextNeighbor == -1)
+                {
+                    nextNeighbor = nodesInFace.get((i + 1) % nodesCountInFace);
+                }
+                addEdgeBetweenNodes(
+                        triangulatedGraph,
+                        nodesInFace.get(i),
+                        nodesInFace.get((i + nodesCountInFace - 1) % nodesCountInFace),
+                        nextNeighbor,
+                        nodesInFace.get(j));
+
+                addEdgeBetweenNodes(
+                        triangulatedGraph,
+                        nodesInFace.get(j),
+                        nodesInFace.get((j + nodesCountInFace - 1) % nodesCountInFace),
+                        nodesInFace.get((j + 1) % nodesCountInFace),
+                        nodesInFace.get(i));
+                nextNeighbor = nodesInFace.get(j);
+            }
+        }
     }
 }

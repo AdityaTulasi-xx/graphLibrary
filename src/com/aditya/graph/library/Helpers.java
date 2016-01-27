@@ -92,6 +92,10 @@ public final class Helpers
         }
 
         // add edges that are still remaining as separate components
+        for (String edge : edgesRemaining)
+        {
+            components.add(getComponentFromStringOfEdge(edge));
+        }
 
         return components;
     }
@@ -104,11 +108,17 @@ public final class Helpers
             int[] componentNumber,
             HashSet<String> edgesRemaining)
     {
+        if (hasVisited[curNode])
+        {
+            // out of paranoia
+            return;
+        }
+
         // mark it visited ONLY if it is not an embedded node
-        hasVisited[curNode] = !isEmbedded[curNode] & true;
+        hasVisited[curNode] = (!isEmbedded[curNode]) && true;
         componentNumber[curNode] = 1; // this decides current component
 
-        if (isEmbedded[curNode] || hasVisited[curNode])
+        if (isEmbedded[curNode])
         {
             // do not go through the edges of an already embedded node
             // nothing to do
@@ -126,7 +136,7 @@ public final class Helpers
         }
     }
 
-    private static String getStringForEdge(Edge edge)
+    public static String getStringForEdge(Edge edge)
     {
         if (edge.src < edge.dest)
         {
@@ -136,6 +146,15 @@ public final class Helpers
         {
             return edge.dest + "." + edge.src;
         }
+    }
+
+    private static ArrayList<Integer> getComponentFromStringOfEdge(String edge)
+    {
+        String[] nodes = edge.split("\\.");
+        ArrayList<Integer> newComponent = new ArrayList<>();
+        newComponent.add(Integer.parseInt(nodes[0]));
+        newComponent.add(Integer.parseInt(nodes[1]));
+        return newComponent;
     }
 
     /**
@@ -222,11 +241,15 @@ public final class Helpers
      * @param acceptableNodes List of nodes between which a path is acceptable.
      * @return List of nodes that constitute the path.
      */
-    public static LinkedList<Integer> findPathBetweenAnyTwo(Graph graph, ArrayList<Integer> acceptableNodes)
+    public static LinkedList<Integer> findPathBetweenAnyTwo(
+            Graph graph,
+            ArrayList<Integer> acceptableNodes,
+            ArrayList<Integer> component)
     {
         LinkedList<Integer> somePath = null;
         boolean[] hasVisited = new boolean[graph.nodesCount];
         boolean[] isAcceptableNode = new boolean[graph.nodesCount];
+        boolean[] isInComponent = new boolean[graph.nodesCount];
 
         for (int i = 0; i < graph.nodesCount; i++)
         {
@@ -239,10 +262,15 @@ public final class Helpers
             isAcceptableNode[acceptableNode] = true;
         }
 
+        for (Integer nodeInComponent : component)
+        {
+            isInComponent[nodeInComponent] = true;
+        }
+
         for (Integer acceptableNode : acceptableNodes)
         {
             somePath = new LinkedList<>();
-            if (findPathBetweenAnyTwo(graph, acceptableNode, somePath, isAcceptableNode, hasVisited))
+            if (findPathBetweenAnyTwo(graph, acceptableNode, somePath, isAcceptableNode, hasVisited, isInComponent))
             {
                 break;
             }
@@ -257,7 +285,8 @@ public final class Helpers
             int curNode,
             LinkedList<Integer> pathSoFar,
             boolean[] isAcceptableNode,
-            boolean[] hasVisited)
+            boolean[] hasVisited,
+            boolean[] isInComponent)
     {
         // have to check for a non-empty path because we are starting with first node and it has to be an
         // acceptable node
@@ -272,9 +301,9 @@ public final class Helpers
 
         for (Edge edge : graph.nodes.get(curNode).neighbors)
         {
-            if (!hasVisited[edge.dest])
+            if (!hasVisited[edge.dest] && isInComponent[edge.dest])
             {
-                if (findPathBetweenAnyTwo(graph, edge.dest, pathSoFar, isAcceptableNode, hasVisited))
+                if (findPathBetweenAnyTwo(graph, edge.dest, pathSoFar, isAcceptableNode, hasVisited, isInComponent))
                 {
                     return true;
                 }

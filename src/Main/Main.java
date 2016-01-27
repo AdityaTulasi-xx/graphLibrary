@@ -45,7 +45,7 @@ public class Main
     public static void testPlanarEmbedding()
     {
         Graph graphToTest = readFileToGraph(
-                "C:\\Users\\adity\\IdeaProjects\\GraphLibrary\\inputFiles\\simplePlanar2.txt");
+                "C:\\Users\\adity\\IdeaProjects\\GraphLibrary\\inputFiles\\simplePlanar3.txt");
 
         IPlanarEmbeddingMethods embedder = PlanarEmbeddingFactory
                 .GetPlanarEmbeddingStrategy(PlanarEmbeddingStrategies.DMP);
@@ -53,7 +53,12 @@ public class Main
         System.out.println("Graph we are testing on:\n" + graphToTest);
         Graph embeddedGraph = new Graph(false);
         embedder.isPlanar(graphToTest, embeddedGraph);
+        Graph triangulatedGraph = new Graph(embeddedGraph.isDirected);
+        embedder.triangulate(embeddedGraph, triangulatedGraph);
+        System.out.println("Planar embedded graph");
         System.out.println(embeddedGraph);
+        System.out.println("Triangulated graph");
+        System.out.println(triangulatedGraph);
     }
 
     public static void testFindCycle() throws Exception
@@ -116,7 +121,13 @@ public class Main
         allowedNodes.add(4);
         allowedNodes.add(7);
 
-        LinkedList<Integer> pathFound = Helpers.findPathBetweenAnyTwo(graph, allowedNodes);
+        ArrayList<Integer> component = new ArrayList<>();
+        for (int i = 0; i < 7; i++)
+        {
+            component.add(i);
+        }
+
+        LinkedList<Integer> pathFound = Helpers.findPathBetweenAnyTwo(graph, allowedNodes, component);
         LinkedList<Integer> expectedPath = new LinkedList<>();
         expectedPath.add(4);
         expectedPath.add(5);

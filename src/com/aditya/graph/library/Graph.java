@@ -1,6 +1,7 @@
 package com.aditya.graph.library;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 
 /**
  * Class to hold details of a Graph
@@ -24,6 +25,12 @@ public class Graph
     public ArrayList<Node> nodes;
 
     /**
+     * This particular field is used only to pass face information from one step of algorithm to another. This
+     * doesn't mean much when it isn't in this context.
+     */
+    public ArrayList<LinkedList<Integer>> faces;
+
+    /**
      * Create a graph object for a directed or undirected graph.
      * NOTE - This graph supports nodes with continuous and integer indices only. It decides the index of node. If
      * you need to use random indices then maintain a mapping of your own.
@@ -36,6 +43,7 @@ public class Graph
         nodesCount = 0;
         edgesCount = 0;
         nodes = new ArrayList<Node>();
+        faces = new ArrayList<>();
     }
 
     /**
@@ -163,11 +171,22 @@ public class Graph
     /**
      * Clones graph object and creates a new replica.
      *
-     * @return Cloned object
+     * @return
      */
     public Graph cloneGraph()
     {
-        Graph clone = new Graph(this.isDirected);
+        return cloneGraph(new Graph(this.isDirected));
+    }
+
+    /**
+     * Clones graph object and creates a replica.
+     *
+     * @param outputGraph Graph in which the cloned values should be put
+     * @return Cloned object
+     */
+    public Graph cloneGraph(Graph outputGraph)
+    {
+        Graph clone = outputGraph;
 
         try
         {
@@ -191,6 +210,13 @@ public class Graph
                         clone.addEdge(edge.src, edge.dest, edge.weight);
                     }
                 }
+            }
+
+            // all all the faces
+            clone.faces = new ArrayList<>();
+            for (LinkedList<Integer> face : this.faces)
+            {
+                clone.faces.add(new LinkedList<>(face));
             }
         }
         catch (Exception ex)

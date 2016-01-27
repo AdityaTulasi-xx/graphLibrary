@@ -14,7 +14,8 @@ public interface IPlanarEmbeddingMethods
     boolean isPlanar(Graph graph, Graph planarEmbeddedGraph);
 
     /**
-     * Takes a planar embedded graph as input and returns a fully triangulated graph.
+     * Takes a planar embedded graph as input and returns a fully triangulated graph. This step also ensures that the
+     * order in which neighbors of nodes appear is consistent across different nodes.
      *
      * @param graph             Graph object returned by isPlanar function.
      * @param triangulatedGraph Fully triangulated version of the input graph. Initialize an empty graph object and
