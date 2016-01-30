@@ -473,6 +473,7 @@ public class DMPPlanarEmbeddingStrategy implements IPlanarEmbeddingMethods
         }
 
         // rotate neighbors of each node so that all of them follow the same sequence
+        orientNeighborsOfTriangulatedGraph(triangulatedGraph);
     }
 
     // this function just adds edges that are missing to the graph.
@@ -517,6 +518,9 @@ public class DMPPlanarEmbeddingStrategy implements IPlanarEmbeddingMethods
             return;
         }
 
+        // We have to maintain the pair of nodes between which the new node has to be inserted. We keep copying
+        // the current node into this variable and use it accordingly.
+        // We don't face this issue with "slave" nodes which are getting connected to "master" node.
         int nextNeighbor = -1;
         for (int j = 0; j < nodesInFace.size(); j++)
         {
@@ -545,5 +549,69 @@ public class DMPPlanarEmbeddingStrategy implements IPlanarEmbeddingMethods
                 nextNeighbor = nodesInFace.get(j);
             }
         }
+    }
+
+    // This function takes a triangulated graph, orders neighbors of nodes in such a way that all of them are
+    // following the same order when compared to clockwise order.
+    //
+    // Algorithm: Once ordering of a node is fixed, we can iterate through its children, make sure that next neighbor
+    // and parent are appearning in the same order. We can keep adding all nodes to list, use them to find new
+    // un-ordered neighbors and order the entire graph
+    private void orientNeighborsOfTriangulatedGraph(Graph graph)
+    {
+        Node curNode;
+        int prevNeighbor;
+        boolean[] hasOrdered = new boolean[graph.nodesCount];
+
+        LinkedList<Integer> orderedNodes = new LinkedList<>();
+        orderedNodes.add(0);
+        hasOrdered[0] = true; // we consider order of 0th node as the correct order
+
+        while (!orderedNodes.isEmpty())
+        {
+            curNode = graph.nodes.get(orderedNodes.removeFirst());
+            prevNeighbor = curNode.neighbors.get(curNode.neighbors.size() - 1).dest;
+
+            for (Edge edge : curNode.neighbors)
+            {
+                if (!hasOrdered[edge.dest])
+                {
+                    orderNeighbors(graph.nodes.get(prevNeighbor), edge.dest, curNode.idx);
+                    orderedNodes.addLast(edge.dest);
+                    hasOrdered[edge.dest] = true;
+                }
+                prevNeighbor = edge.dest;
+            }
+        }
+    }
+
+    private void orderNeighbors(
+            Node curNode,
+            int firstNode,
+            int nextNode)
+    {
+        System.out.println("Ordering: " + curNode.idx + " with first as: " + firstNode + " and second as: " + nextNode);
+
+        int prevNode = curNode.neighbors.get(curNode.neighbors.size() - 1).dest;
+        for (Edge edge : curNode.neighbors)
+        {
+            if (firstNode == prevNode && nextNode == edge.dest)
+            {
+                return;
+            }
+            else if (firstNode == edge.dest && nextNode == prevNode)
+            {
+                // need to revert
+                break;
+            }
+            prevNode = edge.dest;
+        }
+        LinkedList<Edge> reversedList = new LinkedList<>();
+        for (Edge edge : curNode.neighbors)
+        {
+            reversedList.addFirst(new Edge(edge.src, edge.dest));
+        }
+        curNode.neighbors.clear();
+        curNode.neighbors.addAll(reversedList);
     }
 }
