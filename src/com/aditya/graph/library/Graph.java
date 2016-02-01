@@ -80,10 +80,10 @@ public class Graph
     {
         validateSrcDest(src, dest);
 
-        nodes.get(src).neighbors.add(new Edge(src, dest, weight));
+        nodes.get(src).neighbors.add(new Edge(src, dest, false, weight));
         if (!isDirected)
         {
-            nodes.get(dest).neighbors.add(new Edge(dest, src, weight));
+            nodes.get(dest).neighbors.add(new Edge(dest, src, false, weight));
         }
         ++edgesCount;
     }
@@ -196,23 +196,17 @@ public class Graph
                 clone.addNode();
             }
 
+            clone.edgesCount = this.edgesCount;
             // add all edges
             for (int i = 0; i < this.nodesCount; i++)
             {
                 for (Edge edge : this.nodes.get(i).neighbors)
                 {
-                    if (this.isDirected)
-                    {
-                        clone.addEdge(edge.src, edge.dest, edge.weight);
-                    }
-                    else if (edge.src < edge.dest)
-                    {
-                        clone.addEdge(edge.src, edge.dest, edge.weight);
-                    }
+                    clone.nodes.get(i).neighbors.add(new Edge(edge.src, edge.dest, false, edge.weight));
                 }
             }
 
-            // all all the faces
+            // add all the faces
             clone.faces = new ArrayList<>();
             for (LinkedList<Integer> face : this.faces)
             {
@@ -247,7 +241,7 @@ public class Graph
             printedGraph.append("Node #" + i + ":");
             for (Edge edge : this.nodes.get(i).neighbors)
             {
-                printedGraph.append(" " + edge.dest);
+                printedGraph.append(" " + edge.dest + "(" + edge.isTemporary + ")");
             }
             printedGraph.append(".\n");
         }

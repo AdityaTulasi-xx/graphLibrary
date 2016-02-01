@@ -1,5 +1,6 @@
 package Main;
 
+import com.aditya.general.utilities.Point2D;
 import com.aditya.graph.library.*;
 
 import java.io.BufferedReader;
@@ -45,7 +46,7 @@ public class Main
     public static void testPlanarEmbedding()
     {
         Graph graphToTest = readFileToGraph(
-                "C:\\Users\\adity\\IdeaProjects\\GraphLibrary\\inputFiles\\simplePlanar3.txt");
+                "C:\\Users\\adity\\IdeaProjects\\GraphLibrary\\inputFiles\\simplePlanar2.txt");
 
         IPlanarEmbeddingMethods embedder = PlanarEmbeddingFactory
                 .GetPlanarEmbeddingStrategy(PlanarEmbeddingStrategies.DMP);
@@ -53,12 +54,25 @@ public class Main
         System.out.println("Graph we are testing on:\n" + graphToTest);
         Graph embeddedGraph = new Graph(false);
         embedder.isPlanar(graphToTest, embeddedGraph);
-        Graph triangulatedGraph = new Graph(embeddedGraph.isDirected);
-        embedder.triangulate(embeddedGraph, triangulatedGraph);
+
         System.out.println("Planar embedded graph");
         System.out.println(embeddedGraph);
+
+        Graph triangulatedGraph = new Graph(embeddedGraph.isDirected);
+        embedder.triangulate(embeddedGraph, triangulatedGraph);
         System.out.println("Triangulated graph");
         System.out.println(triangulatedGraph);
+        System.out.println();
+
+        IPlanarDrawingMethods drawer = PlanarDrawingFactory
+                .GetPlanarDrawingStrategy(PlanarDrawingStrategies.SCHNYDER);
+
+        System.out.println("\nPositions of planar graph are:\n");
+        ArrayList<Point2D> positions = drawer.DrawOnPlane(triangulatedGraph);
+        for (int i = 0; i < positions.size(); i++)
+        {
+            System.out.println(i + " - " + positions.get(i));
+        }
     }
 
     public static void testFindCycle() throws Exception

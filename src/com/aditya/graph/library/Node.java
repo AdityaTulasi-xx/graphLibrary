@@ -29,7 +29,7 @@ public class Node
      */
     public void addEdge(int dest)
     {
-        neighbors.add(new Edge(idx, dest));
+        neighbors.add(new Edge(idx, dest, true));
     }
 
     /**
@@ -40,6 +40,6 @@ public class Node
      */
     public void addEdge(int dest, int weight)
     {
-        neighbors.add((new Edge(idx, dest, weight)));
+        neighbors.add((new Edge(idx, dest, true, weight)));
     }
 }

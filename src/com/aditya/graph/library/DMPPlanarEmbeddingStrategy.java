@@ -113,6 +113,7 @@ public class DMPPlanarEmbeddingStrategy implements IPlanarEmbeddingMethods
         if (isPlanar)
         {
             planarEmbeddedGraph.faces = faces;
+            planarEmbeddedGraph.edgesCount = graph.edgesCount;
         }
 
         return isPlanar;
@@ -237,14 +238,14 @@ public class DMPPlanarEmbeddingStrategy implements IPlanarEmbeddingMethods
                 if (prevNode != -1)
                 {
                     // adding embedded edges to the new graph
-                    addFreshEdge(planarEmbeddedGraph, prevNode, node);
-                    addFreshEdge(planarEmbeddedGraph, node, prevNode);
+                    addFreshEdge(planarEmbeddedGraph, prevNode, node, false);
+                    addFreshEdge(planarEmbeddedGraph, node, prevNode, false);
                 }
                 prevNode = node;
             }
             // adding the edge between start node and end node
-            addFreshEdge(planarEmbeddedGraph, pathToEmbed.getFirst(), pathToEmbed.getLast());
-            addFreshEdge(planarEmbeddedGraph, pathToEmbed.getLast(), pathToEmbed.getFirst());
+            addFreshEdge(planarEmbeddedGraph, pathToEmbed.getFirst(), pathToEmbed.getLast(), false);
+            addFreshEdge(planarEmbeddedGraph, pathToEmbed.getLast(), pathToEmbed.getFirst(), false);
 
             faces.add(internalFace);
             faces.add(externalFace);
@@ -321,11 +322,11 @@ public class DMPPlanarEmbeddingStrategy implements IPlanarEmbeddingMethods
                     // start and end nodes are handled separately below
                     if (prevNode != startNode)
                     {
-                        addFreshEdge(planarEmbeddedGraph, prevNode, node);
+                        addFreshEdge(planarEmbeddedGraph, prevNode, node, false);
                     }
                     if (node != endNode)
                     {
-                        addFreshEdge(planarEmbeddedGraph, node, prevNode);
+                        addFreshEdge(planarEmbeddedGraph, node, prevNode, false);
                     }
                 }
                 newFace.addFirst(node);
@@ -381,7 +382,7 @@ public class DMPPlanarEmbeddingStrategy implements IPlanarEmbeddingMethods
 
             if (lastNode == startNode)
             {
-                addEdgeBetweenNodes(planarEmbeddedGraph, startNode, secLastNode, curNode, pathToEmbed.get(1));
+                addEdgeBetweenNodes(planarEmbeddedGraph, startNode, secLastNode, curNode, pathToEmbed.get(1), false);
             }
             // this particular case might occur if end node is the last node of the face. we will reach this point
             // again when we reach end node normally. we have start node added after this.
@@ -392,7 +393,7 @@ public class DMPPlanarEmbeddingStrategy implements IPlanarEmbeddingMethods
                         endNode,
                         secLastNode,
                         curNode,
-                        pathToEmbed.get(pathLength - 2));
+                        pathToEmbed.get(pathLength - 2), false);
             }
         }
         // undo the operation done above
@@ -402,9 +403,10 @@ public class DMPPlanarEmbeddingStrategy implements IPlanarEmbeddingMethods
     private void addFreshEdge(
             Graph graph,
             int nodeIdx,
-            int newNeighbor)
+            int newNeighbor,
+            boolean isTemporary)
     {
-        graph.nodes.get(nodeIdx).neighbors.add(new Edge(nodeIdx, newNeighbor));
+        graph.nodes.get(nodeIdx).neighbors.add(new Edge(nodeIdx, newNeighbor, isTemporary));
     }
 
     private void addEdgeBetweenNodes(
@@ -412,7 +414,8 @@ public class DMPPlanarEmbeddingStrategy implements IPlanarEmbeddingMethods
             int nodeIdx,
             int prevNode,
             int nextNode,
-            int newNeighbor)
+            int newNeighbor,
+            boolean isTemporary)
     {
         // find a point where both nodes are neighbors and insert the node between them
         ArrayList<Edge> neighbors = graph.nodes.get(nodeIdx).neighbors;
@@ -420,7 +423,7 @@ public class DMPPlanarEmbeddingStrategy implements IPlanarEmbeddingMethods
         if ((prevNode == neighbors.get(0).dest && nextNode == neighbors.get(neighborsCount - 1).dest) ||
                 (nextNode == neighbors.get(0).dest && prevNode == neighbors.get(neighborsCount - 1).dest))
         {
-            neighbors.add(new Edge(nodeIdx, newNeighbor));
+            neighbors.add(new Edge(nodeIdx, newNeighbor, isTemporary));
         }
         else
         {
@@ -429,7 +432,7 @@ public class DMPPlanarEmbeddingStrategy implements IPlanarEmbeddingMethods
                 if ((prevNode == neighbors.get(i).dest && nextNode == neighbors.get(i + 1).dest) ||
                         (nextNode == neighbors.get(i).dest && prevNode == neighbors.get(i + 1).dest))
                 {
-                    neighbors.add(i + 1, new Edge(nodeIdx, newNeighbor));
+                    neighbors.add(i + 1, new Edge(nodeIdx, newNeighbor, isTemporary));
                     break;
                 }
             }
@@ -497,7 +500,7 @@ public class DMPPlanarEmbeddingStrategy implements IPlanarEmbeddingMethods
                 if (j != i && Math.abs(i - j) != 1 && Math.abs(i - j) != (nodesCountInFace - 1))
                 {
                     if (setOfEdges.contains(Helpers.getStringForEdge(
-                            new Edge(nodesInFace.get(i), nodesInFace.get(j)))))
+                            new Edge(nodesInFace.get(i), nodesInFace.get(j), false))))
                     {
                         isConnectedToSomeNode = true;
                         break;
@@ -526,7 +529,7 @@ public class DMPPlanarEmbeddingStrategy implements IPlanarEmbeddingMethods
         {
             if (i != j && Math.abs(i - j) != 1 && Math.abs(i - j) != (nodesCountInFace - 1))
             {
-                setOfEdges.add(Helpers.getStringForEdge(new Edge(nodesInFace.get(i), nodesInFace.get(j))));
+                setOfEdges.add(Helpers.getStringForEdge(new Edge(nodesInFace.get(i), nodesInFace.get(j), true)));
                 triangulatedGraph.edgesCount++;
 
                 if (nextNeighbor == -1)
@@ -538,14 +541,16 @@ public class DMPPlanarEmbeddingStrategy implements IPlanarEmbeddingMethods
                         nodesInFace.get(i),
                         nodesInFace.get((i + nodesCountInFace - 1) % nodesCountInFace),
                         nextNeighbor,
-                        nodesInFace.get(j));
+                        nodesInFace.get(j),
+                        true);
 
                 addEdgeBetweenNodes(
                         triangulatedGraph,
                         nodesInFace.get(j),
                         nodesInFace.get((j + nodesCountInFace - 1) % nodesCountInFace),
                         nodesInFace.get((j + 1) % nodesCountInFace),
-                        nodesInFace.get(i));
+                        nodesInFace.get(i),
+                        true);
                 nextNeighbor = nodesInFace.get(j);
             }
         }
@@ -609,7 +614,7 @@ public class DMPPlanarEmbeddingStrategy implements IPlanarEmbeddingMethods
         LinkedList<Edge> reversedList = new LinkedList<>();
         for (Edge edge : curNode.neighbors)
         {
-            reversedList.addFirst(new Edge(edge.src, edge.dest));
+            reversedList.addFirst(new Edge(edge.src, edge.dest, edge.isTemporary));
         }
         curNode.neighbors.clear();
         curNode.neighbors.addAll(reversedList);
