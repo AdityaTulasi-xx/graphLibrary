@@ -75,6 +75,7 @@ public class ShiftPlanarDrawingStrategy implements IPlanarDrawingMethods
             LinkedList<Integer> toMoveRight = new LinkedList<>();
             HashSet<Integer> dependentOnCurrent = new HashSet<>();
             boolean hasSeenLeft = false, hasSeenRight = false;
+            dependentOnCurrent.add(canonicalOrder[i]);
 
             for (Integer curNode : currentCycle)
             {
@@ -175,6 +176,9 @@ public class ShiftPlanarDrawingStrategy implements IPlanarDrawingMethods
     {
         int[] ordering = new int[triangulatedGraph.nodesCount];
         int firstNodeDegree = triangulatedGraph.nodes.get(0).neighbors.size();
+        // we use this to maintain list of nodes in the same sequence
+        // this sequence is required to get neighbors of nodes in correct order
+        LinkedList<Integer> currentOuterNodes = new LinkedList<>();
 
         // choose any two nodes as base nodes
         ordering[0] = 0;
@@ -193,6 +197,10 @@ public class ShiftPlanarDrawingStrategy implements IPlanarDrawingMethods
         isOuterNode[triangulatedGraph.nodes.get(0).neighbors.get(0).dest] = true;
         isOuterNode[triangulatedGraph.nodes.get(0).neighbors.get(firstNodeDegree - 1).dest] = true;
 
+        currentOuterNodes.add(0);
+        currentOuterNodes.add(triangulatedGraph.nodes.get(0).neighbors.get(firstNodeDegree - 1).dest);
+        currentOuterNodes.add(triangulatedGraph.nodes.get(0).neighbors.get(0).dest);
+
         int j;
         for (int i = triangulatedGraph.nodesCount - 1; i > 1; i--)
         {
@@ -210,7 +218,7 @@ public class ShiftPlanarDrawingStrategy implements IPlanarDrawingMethods
             ordering[j] = i;
 
             // let us update outer nodes and chords
-            updateChordCounts(j, isMarked, isOuterNode, chordCount, triangulatedGraph);
+            updateChordCounts(j, isMarked, isOuterNode, chordCount, currentOuterNodes, triangulatedGraph);
         }
 
         int[] orderedNodes = new int[triangulatedGraph.nodesCount];
@@ -221,11 +229,18 @@ public class ShiftPlanarDrawingStrategy implements IPlanarDrawingMethods
         return orderedNodes;
     }
 
-    private void updateChordCounts(int curNode, boolean[] isMarked, boolean[] isOuter, int[] chordCount, Graph graph)
+    private void updateChordCounts(
+            int curNode,
+            boolean[] isMarked,
+            boolean[] isOuter,
+            int[] chordCount,
+            LinkedList<Integer> currentOuterNodes,
+            Graph graph)
     {
         // go through all outer neighbors. if count is just 2, then reduce count of chords for both of them.
         // otherwise iterate neighbors of each node and increase counts appropriately
         ArrayList<Integer> outerSequence = new ArrayList<>();
+
         for (Edge edge : graph.nodes.get(curNode).neighbors)
         {
             if (!isMarked[edge.dest])
@@ -234,6 +249,42 @@ public class ShiftPlanarDrawingStrategy implements IPlanarDrawingMethods
                 isOuter[edge.dest] = true;
             }
         }
+
+        int minIdx = currentOuterNodes.size(), minIdxNode = -1;
+        int maxIdx = -1;
+        int curNodeIdx;
+        for (Integer node : outerSequence)
+        {
+            curNodeIdx = currentOuterNodes.indexOf(node);
+            if (curNodeIdx == -1)
+            {
+                continue;
+            }
+            if (curNodeIdx < minIdx)
+            {
+                minIdx = curNodeIdx;
+                minIdxNode = node;
+            }
+            if (curNodeIdx > maxIdx)
+            {
+                maxIdx = curNodeIdx;
+            }
+        }
+
+        int outerSeqSize = outerSequence.size();
+        while (outerSequence.get(0) != minIdxNode)
+        {
+            int temp = outerSequence.remove(outerSeqSize - 1);
+            outerSequence.add(0, temp);
+        }
+
+        // now update current outer nodes
+        LinkedList<Integer> newOuterNodes = new LinkedList<>();
+        newOuterNodes.addAll(currentOuterNodes.subList(0, minIdx + 1));
+        newOuterNodes.addAll(outerSequence.subList(1, outerSeqSize - 1));
+        newOuterNodes.addAll(currentOuterNodes.subList(maxIdx, currentOuterNodes.size()));
+        currentOuterNodes.clear();
+        currentOuterNodes.addAll(newOuterNodes);
 
         if (outerSequence.size() == 2)
         {
@@ -244,14 +295,17 @@ public class ShiftPlanarDrawingStrategy implements IPlanarDrawingMethods
         {
             // go through all nodes that were not outer in previous iteration
             // increase chord count of each
+            HashSet<String> markedEdges = new HashSet<>();
             for (int i = 1; i < outerSequence.size() - 1; i++)
             {
                 for (Edge edge : graph.nodes.get(outerSequence.get(i)).neighbors)
                 {
                     if (isOuter[edge.dest] &&
                             edge.dest != outerSequence.get(i - 1) &&
-                            edge.dest != outerSequence.get(i + 1))
+                            edge.dest != outerSequence.get(i + 1) &&
+                            !markedEdges.contains(Helpers.getStringForEdge(edge)))
                     {
+                        markedEdges.add(Helpers.getStringForEdge(edge));
                         chordCount[outerSequence.get(i)]++;
                         chordCount[edge.dest]++;
                     }

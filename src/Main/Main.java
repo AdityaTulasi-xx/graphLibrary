@@ -2,7 +2,12 @@ package Main;
 
 import com.aditya.general.utilities.Point2D;
 import com.aditya.graph.library.*;
+import org.jgraph.JGraph;
+import org.jgraph.graph.DefaultEdge;
+import org.jgrapht.ext.JGraphModelAdapter;
+import org.jgrapht.graph.ListenableDirectedGraph;
 
+import javax.swing.*;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.util.ArrayList;
@@ -10,7 +15,7 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
-public class Main
+public class Main extends JApplet
 {
     public static void main(String[] args)
     {
@@ -46,7 +51,7 @@ public class Main
     public static void testPlanarEmbedding()
     {
         Graph graphToTest = readFileToGraph(
-                "C:\\Users\\adity\\IdeaProjects\\GraphLibrary\\inputFiles\\simplePlanar2.txt");
+                "C:\\Users\\adity\\IdeaProjects\\GraphLibrary\\inputFiles\\simplePlanar.txt");
 
         IPlanarEmbeddingMethods embedder = PlanarEmbeddingFactory
                 .GetPlanarEmbeddingStrategy(PlanarEmbeddingStrategies.DMP);
@@ -171,7 +176,7 @@ public class Main
         }
     }
 
-    private static Graph readFileToGraph(String pathToFile)
+    public static Graph readFileToGraph(String pathToFile)
     {
         Graph toReturn = new Graph(false);
         try
