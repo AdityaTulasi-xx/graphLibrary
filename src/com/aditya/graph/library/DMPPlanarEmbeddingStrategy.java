@@ -520,6 +520,16 @@ public class DMPPlanarEmbeddingStrategy implements IPlanarEmbeddingMethods
             triangulatedGraph.nodesCount = -1;
             return;
         }
+        else
+        {
+            int masterNode = nodesInFace.get(i);
+            while (masterNode != nodesInFace.get(0))
+            {
+                int tempNode = nodesInFace.remove(nodesInFace.size() - 1);
+                nodesInFace.add(0, tempNode);
+            }
+            i = 0;
+        }
 
         // We have to maintain the pair of nodes between which the new node has to be inserted. We keep copying
         // the current node into this variable and use it accordingly.

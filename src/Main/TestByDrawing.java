@@ -25,13 +25,18 @@ public class TestByDrawing extends JApplet
     public static void main(String[] args)
     {
         Graph graphToTest = Main.readFileToGraph(
-                "C:\\Users\\adity\\IdeaProjects\\GraphLibrary\\inputFiles\\simplePlanar2.txt");
+                "C:\\Users\\adity\\IdeaProjects\\GraphLibrary\\inputFiles\\simplePlanar.txt");
 
         IPlanarEmbeddingMethods embedder = PlanarEmbeddingFactory
                 .GetPlanarEmbeddingStrategy(PlanarEmbeddingStrategies.DMP);
 
         Graph embeddedGraph = new Graph(false);
-        embedder.isPlanar(graphToTest, embeddedGraph);
+        boolean isPlanar = embedder.isPlanar(graphToTest, embeddedGraph);
+
+        if (!isPlanar)
+        {
+            return;
+        }
 
         Graph triangulatedGraph = new Graph(embeddedGraph.isDirected);
         embedder.triangulate(embeddedGraph, triangulatedGraph);

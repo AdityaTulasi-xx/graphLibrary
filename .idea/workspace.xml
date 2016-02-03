@@ -5,23 +5,11 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="b493d887-8e74-449f-b341-b48f1757d4a0" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/jGraphTLib/jgraph-5.13.0.0.jar" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/jGraphTLib/jgrapht-core-0.9.1.jar" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/jGraphTLib/jgrapht-demo-0.9.1.jar" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/jGraphTLib/jgrapht-ext-0.9.1-uber.jar" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/jGraphTLib/jgrapht-ext-0.9.1.jar" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/jGraphTLib/jgraphx-2.0.0.1.jar" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/Main/TestByDrawing.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/out/production/GraphLibrary/Main/Main.class" afterPath="$PROJECT_DIR$/out/production/GraphLibrary/Main/Main.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/out/production/GraphLibrary/com/aditya/graph/library/ShiftPlanarDrawingStrategy.class" afterPath="$PROJECT_DIR$/out/production/GraphLibrary/com/aditya/graph/library/ShiftPlanarDrawingStrategy.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/misc.xml" afterPath="$PROJECT_DIR$/.idea/misc.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/out/production/GraphLibrary/Main/TestByDrawing.class" afterPath="$PROJECT_DIR$/out/production/GraphLibrary/Main/TestByDrawing.class" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/GraphLibrary.iml" afterPath="$PROJECT_DIR$/GraphLibrary.iml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/inputFiles/simplePlanar.txt" afterPath="$PROJECT_DIR$/inputFiles/simplePlanar.txt" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/inputFiles/simplePlanar2.txt" afterPath="$PROJECT_DIR$/inputFiles/simplePlanar2.txt" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/inputFiles/simplePlanar3.txt" afterPath="$PROJECT_DIR$/inputFiles/simplePlanar3.txt" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/Main/Main.java" afterPath="$PROJECT_DIR$/src/Main/Main.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/com/aditya/graph/library/ShiftPlanarDrawingStrategy.java" afterPath="$PROJECT_DIR$/src/com/aditya/graph/library/ShiftPlanarDrawingStrategy.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/Main/TestByDrawing.java" afterPath="$PROJECT_DIR$/src/Main/TestByDrawing.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/com/aditya/graph/library/DMPPlanarEmbeddingStrategy.java" afterPath="$PROJECT_DIR$/src/com/aditya/graph/library/DMPPlanarEmbeddingStrategy.java" />
     </list>
     <ignored path="GraphLibrary.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -47,11 +35,21 @@
         <entry file="file://$PROJECT_DIR$/src/com/aditya/graph/library/DMPPlanarEmbeddingStrategy.java">
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0">
-              <caret line="574" column="39" selection-start-line="574" selection-start-column="39" selection-end-line="574" selection-end-column="39" />
+              <caret line="470" column="0" selection-start-line="470" selection-start-column="0" selection-end-line="470" selection-end-column="0" />
               <folding>
                 <element signature="imports" expanded="true" />
-                <marker date="1454257918940" expanded="true" signature="7939:8012" placeholder="//..." />
+                <marker date="1454505725671" expanded="true" signature="7939:8012" placeholder="//..." />
               </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="Edge.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/com/aditya/graph/library/Edge.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.0">
+              <caret line="26" column="0" selection-start-line="26" selection-start-column="0" selection-end-line="26" selection-end-column="0" />
+              <folding />
             </state>
           </provider>
         </entry>
@@ -60,7 +58,7 @@
         <entry file="file://$PROJECT_DIR$/src/com/aditya/graph/library/ShiftPlanarDrawingStrategy.java">
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0">
-              <caret line="77" column="54" selection-start-line="77" selection-start-column="54" selection-end-line="77" selection-end-column="54" />
+              <caret line="114" column="40" selection-start-line="114" selection-start-column="40" selection-end-line="114" selection-end-column="40" />
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -88,21 +86,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="simplePlanar.txt" pinned="false" current-in-tab="true">
+      <file leaf-file-name="simplePlanar.txt" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/inputFiles/simplePlanar.txt">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.5436893">
-              <caret line="21" column="0" selection-start-line="21" selection-start-column="0" selection-end-line="21" selection-end-column="0" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="Point2D.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/com/aditya/general/utilities/Point2D.java">
-          <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0">
-              <caret line="10" column="17" selection-start-line="10" selection-start-column="17" selection-end-line="10" selection-end-column="17" />
+              <caret line="14" column="0" selection-start-line="14" selection-start-column="0" selection-end-line="14" selection-end-column="0" />
               <folding />
             </state>
           </provider>
@@ -132,7 +120,7 @@
         <entry file="file://$PROJECT_DIR$/src/Main/Main.java">
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0">
-              <caret line="53" column="87" selection-start-line="53" selection-start-column="87" selection-end-line="53" selection-end-column="87" />
+              <caret line="49" column="0" selection-start-line="49" selection-start-column="0" selection-end-line="49" selection-end-column="0" />
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -140,15 +128,13 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="TestByDrawing.java" pinned="false" current-in-tab="false">
+      <file leaf-file-name="TestByDrawing.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/Main/TestByDrawing.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="106" column="31" selection-start-line="106" selection-start-column="31" selection-end-line="106" selection-end-column="31" />
+            <state vertical-scroll-proportion="0.7152104">
+              <caret line="93" column="0" selection-start-line="93" selection-start-column="0" selection-end-line="93" selection-end-column="0" />
               <folding>
                 <element signature="imports" expanded="true" />
-                <element signature="e#5037#5038#0" expanded="true" />
-                <element signature="e#5075#5076#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -197,13 +183,13 @@
         <option value="$PROJECT_DIR$/src/com/aditya/graph/library/PlanarDrawingFactory.java" />
         <option value="$PROJECT_DIR$/src/com/aditya/general/utilities/Point2D.java" />
         <option value="$PROJECT_DIR$/src/com/aditya/graph/library/Graph.java" />
-        <option value="$PROJECT_DIR$/src/com/aditya/graph/library/DMPPlanarEmbeddingStrategy.java" />
         <option value="$PROJECT_DIR$/inputFiles/simplePlanar3.txt" />
         <option value="$PROJECT_DIR$/inputFiles/simplePlanar2.txt" />
-        <option value="$PROJECT_DIR$/src/Main/TestByDrawing.java" />
         <option value="$PROJECT_DIR$/src/Main/Main.java" />
         <option value="$PROJECT_DIR$/src/com/aditya/graph/library/ShiftPlanarDrawingStrategy.java" />
+        <option value="$PROJECT_DIR$/src/com/aditya/graph/library/DMPPlanarEmbeddingStrategy.java" />
         <option value="$PROJECT_DIR$/inputFiles/simplePlanar.txt" />
+        <option value="$PROJECT_DIR$/src/Main/TestByDrawing.java" />
       </list>
     </option>
   </component>
@@ -285,6 +271,7 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
+      <pane id="Scratches" />
       <pane id="ProjectPane">
         <subPane>
           <PATH>
@@ -391,9 +378,8 @@
           </PATH>
         </subPane>
       </pane>
-      <pane id="Scratches" />
-      <pane id="PackagesPane" />
       <pane id="Scope" />
+      <pane id="PackagesPane" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -824,24 +810,6 @@
           <option name="timeStamp" value="31" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/Main/TestByDrawing.java</url>
-          <line>38</line>
-          <properties />
-          <option name="timeStamp" value="42" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/Main/TestByDrawing.java</url>
-          <line>41</line>
-          <properties />
-          <option name="timeStamp" value="43" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/Main/TestByDrawing.java</url>
-          <line>47</line>
-          <properties />
-          <option name="timeStamp" value="44" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/com/aditya/graph/library/ShiftPlanarDrawingStrategy.java</url>
           <line>215</line>
           <properties />
@@ -853,11 +821,41 @@
           <properties />
           <option name="timeStamp" value="47" />
         </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/com/aditya/graph/library/DMPPlanarEmbeddingStrategy.java</url>
+          <line>548</line>
+          <properties />
+          <option name="timeStamp" value="54" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/com/aditya/graph/library/DMPPlanarEmbeddingStrategy.java</url>
+          <line>470</line>
+          <properties />
+          <option name="timeStamp" value="55" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/com/aditya/graph/library/DMPPlanarEmbeddingStrategy.java</url>
+          <line>457</line>
+          <properties />
+          <option name="timeStamp" value="56" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/com/aditya/graph/library/DMPPlanarEmbeddingStrategy.java</url>
+          <line>566</line>
+          <properties />
+          <option name="timeStamp" value="57" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/com/aditya/graph/library/DMPPlanarEmbeddingStrategy.java</url>
+          <line>524</line>
+          <properties />
+          <option name="timeStamp" value="59" />
+        </line-breakpoint>
       </breakpoints>
       <breakpoints-dialog>
         <breakpoints-dialog />
       </breakpoints-dialog>
-      <option name="time" value="48" />
+      <option name="time" value="60" />
     </breakpoint-manager>
     <watches-manager />
   </component>
@@ -930,7 +928,7 @@
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
             <element signature="imports" expanded="true" />
-            <marker date="1454257918940" expanded="true" signature="7939:8012" placeholder="//..." />
+            <marker date="1454505725671" expanded="true" signature="7939:8012" placeholder="//..." />
           </folding>
         </state>
       </provider>
@@ -1135,14 +1133,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/com/aditya/graph/library/Edge.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="40" column="0" selection-start-line="40" selection-start-column="0" selection-end-line="40" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/com/aditya/graph/library/Face.java">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
@@ -1188,25 +1178,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/inputFiles/simplePlanar3.txt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="12" column="4" selection-start-line="12" selection-start-column="4" selection-end-line="12" selection-end-column="4" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/com/aditya/graph/library/DMPPlanarEmbeddingStrategy.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="574" column="39" selection-start-line="574" selection-start-column="39" selection-end-line="574" selection-end-column="39" />
-          <folding>
-            <element signature="imports" expanded="true" />
-            <marker date="1454257918940" expanded="true" signature="7939:8012" placeholder="//..." />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/inputFiles/simplePlanar2.txt">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
@@ -1231,32 +1202,47 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/Main/TestByDrawing.java">
+    <entry file="file://$PROJECT_DIR$/src/Main/Main.java">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
-          <caret line="106" column="31" selection-start-line="106" selection-start-column="31" selection-end-line="106" selection-end-column="31" />
+          <caret line="49" column="0" selection-start-line="49" selection-start-column="0" selection-end-line="49" selection-end-column="0" />
           <folding>
             <element signature="imports" expanded="true" />
-            <element signature="e#5037#5038#0" expanded="true" />
-            <element signature="e#5075#5076#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/Main/Main.java">
+    <entry file="file://$PROJECT_DIR$/src/com/aditya/graph/library/Edge.java">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
-          <caret line="53" column="87" selection-start-line="53" selection-start-column="87" selection-end-line="53" selection-end-column="87" />
+          <caret line="26" column="0" selection-start-line="26" selection-start-column="0" selection-end-line="26" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/com/aditya/graph/library/DMPPlanarEmbeddingStrategy.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="470" column="0" selection-start-line="470" selection-start-column="0" selection-end-line="470" selection-end-column="0" />
           <folding>
             <element signature="imports" expanded="true" />
+            <marker date="1454505725671" expanded="true" signature="7939:8012" placeholder="//..." />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/inputFiles/simplePlanar3.txt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="12" column="4" selection-start-line="12" selection-start-column="4" selection-end-line="12" selection-end-column="4" />
+          <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/com/aditya/graph/library/ShiftPlanarDrawingStrategy.java">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
-          <caret line="77" column="54" selection-start-line="77" selection-start-column="54" selection-end-line="77" selection-end-column="54" />
+          <caret line="114" column="40" selection-start-line="114" selection-start-column="40" selection-end-line="114" selection-end-column="40" />
           <folding>
             <element signature="imports" expanded="true" />
           </folding>
@@ -1265,9 +1251,19 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/inputFiles/simplePlanar.txt">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.5436893">
-          <caret line="21" column="0" selection-start-line="21" selection-start-column="0" selection-end-line="21" selection-end-column="0" />
+        <state vertical-scroll-proportion="0.0">
+          <caret line="14" column="0" selection-start-line="14" selection-start-column="0" selection-end-line="14" selection-end-column="0" />
           <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/Main/TestByDrawing.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.7152104">
+          <caret line="93" column="0" selection-start-line="93" selection-start-column="0" selection-end-line="93" selection-end-column="0" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
